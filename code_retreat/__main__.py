@@ -22,7 +22,7 @@ def get_user_data(path):
     # check the format
     # team: name, name, name
     if not first.startswith('#'):
-        sys.stderr.write('First line of your file needs to be the comment string!')
+        sys.stderr.write('First line of your file needs to be the comment string!\n')
         sys.exit(1)
 
     first.split(':')[1]
