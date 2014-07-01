@@ -5,7 +5,7 @@
 
     virtualenv .
     source bin/activate
-    pip install jsoxford-code-retreat
+    pip install jsox-code-retreat
     ocr path/to/your/code.py
 
 ## Requirements
