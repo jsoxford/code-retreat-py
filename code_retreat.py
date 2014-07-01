@@ -99,8 +99,18 @@ def main():
     sys.exit(0)
 
 
-if __name__ == '__main__':
+def run():
+    """
+    Wrapper for the main function
+
+    Wraps main with a keyboard interrupt catch so running the module directly
+    and from the console_scripts can use the same functionality without having
+    extra indentation in main.
+    """
     try:
         main()
     except KeyboardInterrupt:
         sys.exit(0)
+
+if __name__ == '__main__':
+    run()
