@@ -1,60 +1,17 @@
-import collections
+#!/usr/bin/env python
+
+import argparse
 import imp
-import json
 import logging
-import socket
+import os
 import sys
+import time
+
+from .server import get_socket, NoData, send
+from .testing import run_tests
 
 
-logging.basicConfig(
-    format='%(asctime)-15s %(levelname)-8s %(name)-11s %(message)s',
-    level=logging.DEBUG,
-)
-log = logging.getLogger('code-retreat-runner')
-
-
-def get_user_data(path):
-    Data = collections.namedtuple('Data', ['team', 'session_id'])
-
-    with open(path, 'r') as f:
-        first = f.readline()
-
-    # check the format
-    # team: name, name, name
-    if not first.startswith('#'):
-        sys.stderr.write('First line of your file needs to be the comment string!\n')
-        sys.exit(1)
-
-    first.split(':')[1]
-    data = Data(
-        team=['foo', 'bar'],
-        session_id='',
-    )
-
-    return data
-
-
-def get_user_file():
-    try:
-        path = sys.argv[1]
-    except IndexError:
-        sys.stderr.write('Specify a user file to run with.\n')
-        sys.exit(1)
-
-    return path
-
-
-def get_socket():
-    """Create an INET, STREAMing socket"""
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    except socket.error:
-        sys.stderr.write('Failed to create socket.\n')
-        sys.exit(1)
-
-    s.connect(('', 3001))
-
-    return s
+log = logging.getLogger('code-retreat')
 
 
 def import_user_code(path):
@@ -66,37 +23,37 @@ def import_user_code(path):
         sys.exit(1)
 
 
-def main():
-    # do some startup and sanity checks
-    user_file = get_user_file()
-    user_code = import_user_code(user_file)
-    user_data = get_user_data(user_file)
+def main(path):
+    """
+    open socket
+    watch file
+    on modified
+        run tests
+        check socket is open
+            push output to server
+    """
+    sock = get_socket()
 
-    s = get_socket()
-
+    before = os.path.getmtime(path)
     while True:
-        data = s.recv(4096)
+        time.sleep(1)
+        after = os.path.getmtime(path)
+        if after > before:
+            log.debug('User code modified.')
+            # import user code
+            user_code = import_user_code(path)
 
-        if data:
-            log.debug('Received: {}'.format(data))
-            info = json.loads(data)
-            log.debug('Parsed: {}'.format(info))
+            # run tests on the code
+            passed = run_tests(path)
 
-            # run info through user function
-            next_step = user_code.get_next_step(info['payload'])
+            if passed:
+                try:
+                    send(sock, user_code)
+                except NoData:
+                    pass
 
-            # build response
-            response = json.dumps({
-                'team': user_data.team,
-                'foo': next_step,
-                'session': user_data.session_id,
-            })
-            log.debug('Reponse: {}'.format(response))
-            s.sendall(response)
-
-    s.close()
-
-    sys.exit(0)
+        # reset before so we can check in the next loop
+        before = after
 
 
 def run():
@@ -107,8 +64,18 @@ def run():
     and from the console_scripts can use the same functionality without having
     extra indentation in main.
     """
+    parser = argparse.ArgumentParser()
+    parser.add_argument('path', metavar='PATH')
+    parser.add_argument('-d', '--debug', dest='debug', action='store_true')
+    args = parser.parse_args()
+
+    logging.basicConfig(
+        format='%(asctime)-15s %(levelname)-8s %(name)-11s %(message)s',
+        level=logging.DEBUG if args.debug else logging.CRITICAL,
+    )
+
     try:
-        main()
+        main(args.path)
     except KeyboardInterrupt:
         sys.exit(0)
 
