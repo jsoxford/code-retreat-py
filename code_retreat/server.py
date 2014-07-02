@@ -66,14 +66,12 @@ def send(sock, user_code):
     iteration, coords = info['payload'].items()[0]
     next_step = user_code.get_next_step(coords)
 
-    next_iteration = 'g{}'.format(int(iteration.split('g')[1]) + 1)
-
     # build response
     response = json.dumps({
         'respondingTo': 'processIteration',
         'payload': {
-            iteration: coords,
-            next_iteration: next_step,
+            'gen0': coords,
+            'gen1': next_step,
         }
     })
 
