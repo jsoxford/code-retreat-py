@@ -22,7 +22,7 @@ def get_user_data(path):
     # check the format
     # team: name, name, name
     if not first.startswith('#'):
-        sys.stderr.write('First line of your file needs to be the comment string!\n')
+        sys.stderr.write('The first line of your file must be a comment of the form: "#Arsenal: Bill, Anna, Rodders"\n')
         sys.exit(1)
 
     first.split(':')[1]
@@ -58,7 +58,6 @@ def get_socket():
 
 
 def import_user_code(path):
-    """Import user code from argument"""
     try:
         return imp.load_source('user_code', path)
     except IOError:
@@ -114,3 +113,4 @@ def run():
 
 if __name__ == '__main__':
     run()
+
