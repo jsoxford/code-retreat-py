@@ -69,10 +69,13 @@ def send(sock, user_code):
     # build response
     response = json.dumps({
         'respondingTo': 'processIteration',
-        'payload': {
-            'gen0': coords,
-            'gen1': next_step,
-        }
+        'payload': [{
+            'generation': iteration,
+            'result': coords,
+        }, {
+            'generation': iteration + 1,
+            'result': next_step,
+        }]
     })
 
     log.debug('Sending: {}'.format(response))
