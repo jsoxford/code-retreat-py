@@ -1,4 +1,7 @@
-import cStringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 import sys
 
 import pytest
@@ -12,7 +15,7 @@ def run_tests(path):
 
     # redirect stdout to grab return of pytest
     old_stdout = sys.stdout
-    sys.stdout = new_stdout = cStringIO.StringIO()
+    sys.stdout = new_stdout = StringIO()
 
     retcode = pytest.main('-q {}'.format(path))
 
