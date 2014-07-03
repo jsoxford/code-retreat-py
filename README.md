@@ -1,4 +1,7 @@
-# JS Oxford Code Retreat (Python Lib)
+code-retreat-py
+===============
+
+Python runner for code retreat
 
 
 ## Quickstart
@@ -13,3 +16,7 @@
 * bash-like environment
 * `pip`
 * `virtualenv`
+
+
+## Writing Tests
+Test functions must start with `test_` to be found by the test runner.
