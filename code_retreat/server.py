@@ -1,6 +1,5 @@
 import logging
 import json
-import re
 import socket
 
 
