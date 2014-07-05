@@ -25,7 +25,7 @@ def get_data(sock):
             log.debug('Couldn\'t create socket')
             raise NoData
 
-    data = sock.recv(1024)
+    data = sock.recv(4096)
     log.debug('Data 1: {}'.format(data))
     if len(data) == 0:
         # socket is dead so try to connect again
@@ -78,18 +78,20 @@ def send(sock, user_code):
     info = json.loads(data.split('\n')[0])
     log.debug('Parsed: {}'.format(info))
 
-    iteration, coords = info['payload'].items()[0]
-    next_step = user_code.get_next_step(coords)
+    generation = info['payload']['generation']
+    result = info['payload']['results']
+    user_result = user_code.tickBoard(result)
 
     # build response
     response = json.dumps({
-        'respondingTo': 'processIteration',
+        'status': '',
+        'respondingTo': 'tickBoard',
         'payload': [{
-            'generation': iteration,
-            'result': coords,
+            'generation': generation,
+            'result': result,
         }, {
-            'generation': iteration + 1,
-            'result': next_step,
+            'generation': generation + 1,
+            'result': user_result,
         }]
     })
 
