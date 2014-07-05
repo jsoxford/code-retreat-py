@@ -97,17 +97,17 @@ def send(sock, user_code):
     info = json.loads(data.split('\n')[0])
     log.debug('Parsed: {}'.format(info))
 
-    if info['action'] in ('tickBoard', 'tickCell'):
-        args = (
-            info['action'],
-            info['payload']['generation'],
-            info['payload']['result'],
-            user_code,
-        )
-        response = build_response(*args)
-    else:
+    if info['action'] not in ('tickBoard', 'tickCell'):
         log.debug('Unknown action: "{}"'.format())
         return
+
+    args = (
+        info['action'],
+        info['payload']['generation'],
+        info['payload']['result'],
+        user_code,
+    )
+    response = build_response(*args)
 
     log.debug('Sending: {}'.format(response))
 
