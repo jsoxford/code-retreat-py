@@ -12,6 +12,24 @@ class NoData(Exception):
     pass
 
 
+def build_response(action, generation, result, user_code):
+    user_result = getattr(user_code, action)(result)
+
+    # build payload
+    response = json.dumps({
+        'success': '',
+        'respondingTo': action,
+        'payload': [{
+            'generation': generation,
+            'result': result,
+        }, {
+            'generation': generation + 1,
+            'result': user_result,
+        }]
+    })
+
+    return response
+
 def get_data(sock):
     """
     Get data from the socket
@@ -79,22 +97,17 @@ def send(sock, user_code):
     info = json.loads(data.split('\n')[0])
     log.debug('Parsed: {}'.format(info))
 
-    generation = info['payload']['generation']
-    result = info['payload']['results']
-    user_result = user_code.tickBoard(result)
-
-    # build response
-    response = json.dumps({
-        'status': '',
-        'respondingTo': 'tickBoard',
-        'payload': [{
-            'generation': generation,
-            'result': result,
-        }, {
-            'generation': generation + 1,
-            'result': user_result,
-        }]
-    })
+    if info['action'] in ('tickBoard', 'tickCell'):
+        args = (
+            info['action'],
+            info['payload']['generation'],
+            info['payload']['result'],
+            user_code,
+        )
+        response = build_response(*args)
+    else:
+        log.debug('Unknown action: "{}"'.format())
+        return
 
     log.debug('Sending: {}'.format(response))
 
