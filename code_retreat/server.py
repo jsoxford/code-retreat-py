@@ -17,7 +17,7 @@ def build_response(action, generation, result, user_code):
 
     # build payload
     response = json.dumps({
-        'success': '',
+        'success': True,
         'respondingTo': action,
         'payload': [{
             'generation': generation,
