@@ -126,3 +126,18 @@ def send(sock, user_code):
     log.debug('Sending: {}'.format(response))
 
     sock.sendall(response)
+
+
+def send_test_data(ran, failed):
+    sock = get_socket()
+
+    response = json.dumps({
+        'action': 'consumeTestsResults',
+        'payload': {
+            'testsRun': ran,
+            'testsFailed': failed,
+            'testsIgnored': 0,
+        }
+    })
+
+    sock.sendall(response)

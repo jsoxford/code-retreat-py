@@ -45,7 +45,10 @@ def main(path):
             user_code = import_user_code(path)
 
             # run tests on the code
-            passed = run_tests(path)
+            passed, ran, failures = run_tests(path)
+
+            # TODO: push results to server
+            # send_tests()
 
             if passed:
                 try:
