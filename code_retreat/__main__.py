@@ -53,7 +53,7 @@ def main(path):
                 except NoData:
                     pass
                 except Exception as e:
-                    sys.stderr.write('There was an error in your code: {}'.format(e))
+                    sys.stderr.write('There was an error in your code: {}\n'.format(e))
 
         # reset before so we can check in the next loop
         before = after
