@@ -31,6 +31,7 @@ def build_response(action, generation, result, user_code):
 
     return response
 
+
 def get_data(sock):
     """
     Get data from the socket
