@@ -52,8 +52,6 @@ def main(path):
                     send(sock, user_code)
                 except NoData:
                     pass
-                except Exception as e:
-                    sys.stderr.write('There was an error in your code: {}\n'.format(e))
 
         # reset before so we can check in the next loop
         before = after

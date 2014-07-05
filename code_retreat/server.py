@@ -1,6 +1,7 @@
 import logging
 import json
 import socket
+import sys
 
 import requests
 
@@ -107,7 +108,19 @@ def send(sock, user_code):
         info['payload']['result'],
         user_code,
     )
-    response = build_response(*args)
+    try:
+        response = build_response(*args)
+    except Exception as e:
+        log.debug('Error in user code: {}'.format(e))
+        sys.stderr.write('There was an error in your code: {}\n'.format(e))
+
+        response = {
+            'success': False,
+            'respondingTo': info['action'],
+            'payload': {
+                'error': 'The function could not be executed.'
+            }
+        }
 
     log.debug('Sending: {}'.format(response))
 
