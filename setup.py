@@ -23,7 +23,7 @@ setup(
     long_description=__doc__,
     packages=find_packages(),
     entry_points={'console_scripts': ['cr=code_retreat.__main__:run']},
-    install_requires=['pytest'],
+    install_requires=['pytest==2.5.2', 'requests==2.3.0'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',

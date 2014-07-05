@@ -2,6 +2,8 @@ import logging
 import json
 import socket
 
+import requests
+
 
 log = logging.getLogger('code-retreat')
 
@@ -43,14 +45,28 @@ def get_data(sock):
 
 
 def get_socket():
-    """Create an INET, STREAMing socket"""
+    """
+    Create a socket to the GoL Server
+
+    The IP is retrieved from a JSON document hosted at jsoxford.com to avoid
+    IP changing issues on networks we can't control.
+    """
+    url = 'http://jsoxford.com/cr.json'
+    r = requests.get(url)
+    if not r.ok:
+        log.debug('Could not get server address data: {}'.format(r.status_code))
+        return None
+
+    address = tuple(r.json()['endpoint'].values())
+
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(('', 3001))
+        s.connect(address)
     except socket.error:
         log.debug('Failed to create socket.')
         return None
 
+    log.debug('Socket connected to: {}:{}'.format(*address))
     return s
 
 

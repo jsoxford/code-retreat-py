@@ -40,6 +40,7 @@ def main(path):
         after = os.path.getmtime(path)
         if after > before:
             log.debug('User code modified.')
+
             # import user code
             user_code = import_user_code(path)
 
