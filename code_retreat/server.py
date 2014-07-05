@@ -94,7 +94,7 @@ def send(sock, user_code):
     """Send return value of the user's function to the server"""
     data = get_data(sock)
 
-    # It's is alive!
+    # It's alive!
     info = json.loads(data.split('\n')[0])
     log.debug('Parsed: {}'.format(info))
 
