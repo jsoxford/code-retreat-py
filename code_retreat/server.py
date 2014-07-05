@@ -13,20 +13,35 @@ class NoData(Exception):
     pass
 
 
-def build_response(action, generation, result, user_code):
+def build_response(info, user_code):
+    action = info['action'],
+    generation = info['payload']['generation'],
+    result = info['payload']['result'],
+
     user_result = getattr(user_code, action)(result)
 
-    # build payload
-    response = json.dumps({
-        'success': True,
-        'respondingTo': action,
-        'payload': [{
+    types = {
+        'tickBoard': [{
             'generation': generation,
             'result': result,
         }, {
             'generation': generation + 1,
             'result': user_result,
-        }]
+        }],
+        'tickCell': {
+            'generation': generation,
+            'x': info['payload']['x'],
+            'y': info['payload']['y'],
+            'from': info['payload']['from'],
+            'lives': user_result,
+        },
+    }
+
+    # build payload
+    response = json.dumps({
+        'success': True,
+        'respondingTo': action,
+        'payload': types[action],
     })
 
     return response
@@ -104,13 +119,10 @@ def send(sock, user_code):
         return
 
     args = (
-        info['action'],
-        info['payload']['generation'],
-        info['payload']['result'],
         user_code,
     )
     try:
-        response = build_response(*args)
+        response = getattr(user_code, info['action'])(*args)
     except Exception as e:
         log.debug('Error in user code: {}'.format(e))
         sys.stderr.write('There was an error in your code: {}\n'.format(e))
