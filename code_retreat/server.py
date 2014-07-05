@@ -57,7 +57,8 @@ def get_socket():
         log.debug('Could not get server address data: {}'.format(r.status_code))
         return None
 
-    address = tuple(r.json()['endpoint'].values())
+    endpoint = r.json()['endpoint']
+    address = (endpoint['host'], endpoint['port'])
 
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
