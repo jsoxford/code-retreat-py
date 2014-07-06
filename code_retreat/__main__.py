@@ -45,7 +45,8 @@ def main(path):
             user_code = import_user_code(path)
 
             # run tests on the code
-            passed, ran, failures = run_tests(path)
+            # passed, ran, failures = run_tests(path)
+            passed = run_tests(path)
 
             # TODO: push results to server
             # send_tests()
@@ -82,6 +83,7 @@ def run():
         main(args.path)
     except KeyboardInterrupt:
         sys.exit(0)
+
 
 if __name__ == '__main__':
     run()

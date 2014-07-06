@@ -8,6 +8,11 @@ import pytest
 
 
 def run_tests(path):
+    retcode = pytest.main(path)
+    if retcode == 0:
+        return True
+    return False
+
     # redirect stdout to grab return of pytest
     old_stdout = sys.stdout
     sys.stdout = new_stdout = StringIO()
