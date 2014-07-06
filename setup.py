@@ -14,7 +14,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='jsox-code-retreat',
-    version='0.3.0',
+    version='0.4.0',
     url='http://github.com/jsoxford/code-retreat-py',
     license='MIT',
     author='George Hickman',
