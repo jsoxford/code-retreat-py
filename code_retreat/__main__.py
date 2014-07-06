@@ -49,7 +49,10 @@ def main(path):
 
             # run tests on the code
             # passed, ran, failures = run_tests(path)
-            passed = run_tests(path)
+            os.system('py.test {}'.format(path))
+            # import pytest
+            # pytest.main(path)
+            # passed = run_tests(path)
 
             # TODO: push results to server
             # send_tests()
