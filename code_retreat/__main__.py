@@ -42,7 +42,7 @@ def main(path):
             log.debug('User code modified.')
 
             # import user code
-            user_code = import_user_code(path)
+            # user_code = import_user_code(path)
 
             # run tests on the code
             # passed, ran, failures = run_tests(path)
