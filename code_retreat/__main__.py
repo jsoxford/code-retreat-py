@@ -32,7 +32,7 @@ def main(path):
         check socket is open
             push output to server
     """
-    sock = get_socket()
+    # sock = get_socket()
 
     before = os.path.getmtime(path)
     while True:
@@ -51,11 +51,11 @@ def main(path):
             # TODO: push results to server
             # send_tests()
 
-            if passed:
-                try:
-                    send(sock, user_code)
-                except NoData:
-                    pass
+            # if passed:
+            #     try:
+            #         send(sock, user_code)
+            #     except NoData:
+            #         pass
 
         # reset before so we can check in the next loop
         before = after
