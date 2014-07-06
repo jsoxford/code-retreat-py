@@ -42,7 +42,10 @@ def main(path):
             log.debug('User code modified.')
 
             # import user code
-            # user_code = import_user_code(path)
+            try:
+                user_code = import_user_code(path)
+            except Exception as e:
+                sys.stderr.write('Error in your codez: {}'.format(e))
 
             # run tests on the code
             # passed, ran, failures = run_tests(path)
